@@ -1,0 +1,666 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Ripasso Corso Base CRI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Condensed:wght@600;700&family=IBM+Plex+Sans:ital,wght@0,400;0,600;1,400&family=IBM+Plex+Mono:wght@500&display=swap">
+<style>
+:root{
+  --bg:#F5F5F2; --surface:#FFFFFF; --ink:#16181D; --muted:#4F5560; --line:#DCDDE1;
+  --red:#B00F27; --red-soft:#FCE9EC; --green:#23703F; --green-soft:#E3F2E8; --hl:#FFF0C2; --blue-soft:#E8EEF8; --blue:#2A4F8F;
+  --display:"IBM Plex Sans Condensed","Arial Narrow",system-ui,sans-serif;
+  --body:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#131519; --surface:#1C1F25; --ink:#EEEFF1; --muted:#B0B5BE; --line:#343841;
+    --red:#FF6B7E; --red-soft:#3B1C22; --green:#6BD497; --green-soft:#16301F; --hl:#4A3A0E; --blue-soft:#1C2638; --blue:#9DB8EA;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#131519; --surface:#1C1F25; --ink:#EEEFF1; --muted:#B0B5BE; --line:#343841;
+  --red:#FF6B7E; --red-soft:#3B1C22; --green:#6BD497; --green-soft:#16301F; --hl:#4A3A0E; --blue-soft:#1C2638; --blue:#9DB8EA;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{background:var(--bg);color:var(--ink);font:17px/1.7 var(--body);padding-inline:16px;padding-block:0 64px}
+.wrap{max-width:760px;margin:0 auto}
+header{padding-block:32px 20px}
+.eyebrow{font:500 13px var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--red)}
+h1{font:700 clamp(32px,7vw,46px)/1.05 var(--display);margin:8px 0 12px;text-wrap:balance}
+.lede{color:var(--muted);margin:0;max-width:60ch}
+.legend{display:flex;flex-wrap:wrap;gap:10px 20px;margin-top:14px;font-size:15px;color:var(--muted)}
+
+.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);border-bottom:1px solid var(--line);padding-block:10px}
+.tabs{display:flex;gap:6px}
+.tab{font:600 17px var(--display);letter-spacing:.02em;padding:9px 20px;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:8px;cursor:pointer}
+.tab[aria-selected="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.chips{display:flex;gap:6px;overflow-x:auto;padding-top:10px;scrollbar-width:thin}
+.chip{flex:0 0 auto;font:500 14px var(--body);padding:6px 12px;border:1px solid var(--line);border-radius:999px;background:var(--surface);color:var(--ink);cursor:pointer;white-space:nowrap}
+.chip b{font-family:var(--mono);color:var(--red);font-weight:500;margin-right:4px}
+.chip[aria-current="true"]{background:var(--red);border-color:var(--red);color:#fff}
+.chip[aria-current="true"] b{color:#fff}
+button:focus-visible,select:focus-visible,.chip:focus-visible{outline:3px solid var(--red);outline-offset:2px}
+
+section.mod{padding-block:28px 8px}
+.modnum{font:500 14px var(--mono);color:var(--red);letter-spacing:.06em}
+h2{font:700 clamp(28px,6vw,36px)/1.1 var(--display);margin:4px 0 20px;text-wrap:balance}
+h3{font:700 21px/1.25 var(--display);margin:34px 0 10px;padding-top:14px;border-top:1px solid var(--line)}
+p{margin:0 0 12px}
+ul,ol{margin:0 0 12px;padding-left:22px}
+li{margin:6px 0}
+li::marker{color:var(--red)}
+.k{background:var(--hl);padding:1px 4px;border-radius:3px;font-weight:600;box-decoration-break:clone;-webkit-box-decoration-break:clone}
+.no{color:var(--red);font-weight:700}
+.brief{background:var(--surface);border:1px solid var(--line);border-left:5px solid var(--red);border-radius:8px;padding:16px 18px}
+.brief .lbl{font:500 12px var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--red);margin-bottom:6px}
+.brief ul{margin:0}
+.note{background:var(--blue-soft);border-radius:8px;padding:14px 18px;margin:16px 0}
+.note .lbl{font:500 12px var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--blue);margin-bottom:4px}
+.note p:last-child,.note ul:last-child{margin-bottom:0}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px;margin:8px 0 12px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:14px 16px}
+.card h4{margin:0 0 6px;font:700 19px var(--display)}
+.card p{margin:0}
+.card ul{margin:0}
+.steps{list-style:none;padding:0;counter-reset:s;margin:8px 0 14px}
+.steps li{counter-increment:s;position:relative;padding:10px 14px 10px 50px;background:var(--surface);border:1px solid var(--line);border-radius:8px;margin:0 0 8px}
+.steps li::before{content:counter(s);position:absolute;left:12px;top:9px;width:28px;height:28px;border-radius:50%;background:var(--red);color:#fff;font:500 14px/28px var(--mono);text-align:center}
+.tw{overflow-x:auto;margin:8px 0 14px;border:1px solid var(--line);border-radius:8px}
+table{border-collapse:collapse;width:100%;font-size:16px;background:var(--surface)}
+th,td{border-bottom:1px solid var(--line);padding:10px 14px;text-align:left;vertical-align:top}
+tr:last-child td{border-bottom:0}
+th{font:600 13px var(--body);text-transform:uppercase;letter-spacing:.06em;color:var(--muted);background:var(--bg)}
+td.n{font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:nowrap}
+.pager{display:flex;justify-content:space-between;gap:12px;margin-top:32px;flex-wrap:wrap}
+.btn{font:600 16px var(--body);padding:10px 16px;border-radius:8px;border:1px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer}
+.btn.primary{background:var(--red);border-color:var(--red);color:#fff}
+.btn[disabled]{opacity:.4;cursor:default}
+.src{font-size:14px;color:var(--muted);margin-top:28px}
+.dl{margin-top:40px;padding:20px;border:1px dashed var(--line);border-radius:10px;background:var(--surface);display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between}
+.dl p{margin:0;color:var(--muted);font-size:15px;max-width:44ch}
+.dlmsg{font-size:14px;color:var(--muted);width:100%}
+/* quiz */
+.qbar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:22px 0}
+select{font:inherit;padding:8px 12px;border-radius:8px;border:1px solid var(--line);background:var(--surface);color:var(--ink)}
+.score{font:500 15px var(--mono);font-variant-numeric:tabular-nums;margin-left:auto}
+.q{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:18px;margin-bottom:14px}
+.qmeta{font:500 12px var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.qtext{font-weight:600;font-size:18px;margin:6px 0 12px;line-height:1.5}
+.opts{display:grid;gap:8px}
+.opt{text-align:left;font:inherit;font-size:16px;line-height:1.45;padding:11px 14px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink);cursor:pointer}
+.opt:hover:not(:disabled){border-color:var(--ink)}
+.opt:disabled{cursor:default}
+.opt.ok{background:var(--green-soft);border-color:var(--green)}
+.opt.bad{background:var(--red-soft);border-color:var(--red)}
+.why{margin-top:12px;font-size:16px;color:var(--muted);border-left:3px solid var(--line);padding-left:12px}
+.why b{color:var(--ink)}
+@media (prefers-reduced-motion:no-preference){.opt,.chip{transition:background .15s,border-color .15s}}
+</style>
+<style>[hidden]{display:none!important}body{margin:0}img{max-width:100%}</style>
+</head>
+<body>
+
+<div class="wrap">
+<header>
+  <div class="eyebrow">Croce Rossa Italiana · Corso di accesso</div>
+  <h1>Ripasso Corso Base CRI</h1>
+  <p class="lede">Solo ciò che il test chiede di norma: sequenze operative, definizioni, numeri chiave e cosa non fare. Un modulo alla volta, poi il quiz.</p>
+  <div class="legend"><span><span class="k">evidenziato</span> da sapere a memoria</span><span><span class="no">NO</span> errore da evitare</span></div>
+</header>
+
+<div class="bar">
+  <nav class="tabs" role="tablist" aria-label="Sezioni">
+    <button class="tab" role="tab" id="t-sch" aria-selected="true" aria-controls="p-sch">Schede</button>
+    <button class="tab" role="tab" id="t-quiz" aria-selected="false" aria-controls="p-quiz">Quiz</button>
+  </nav>
+  <div class="chips" id="chips" aria-label="Moduli"></div>
+</div>
+
+<div id="p-sch" role="tabpanel">
+
+<section class="mod" id="m1" data-t="Movimento">
+  <div class="modnum">MODULO 01</div>
+  <h2>Il Movimento e i 7 Principi</h2>
+  <div class="brief"><div class="lbl">In breve</div><ul>
+    <li>Dunant, <span class="k">Solferino 24 giugno 1859</span>.</li>
+    <li>Tre componenti: CICR, FICR, Società Nazionali.</li>
+    <li>I <span class="k">7 Principi</span> in ordine, con il loro significato.</li>
+  </ul></div>
+
+  <h3>Le origini</h3>
+  <ul>
+    <li><b>Henry Dunant</b> (1828–1910), uomo d'affari svizzero. <span class="k">Premio Nobel per la Pace 1901</span>.</li>
+    <li>Alla <span class="k">battaglia di Solferino (24 giugno 1859)</span> vede migliaia di feriti morire senza cure e organizza i soccorsi con la popolazione.</li>
+    <li>Propone due cose: <b>Società di soccorso</b> volontarie, da cui nascono le Società Nazionali, e una <b>Convenzione</b> che protegga feriti e soccorritori, da cui nascono le Convenzioni di Ginevra.</li>
+  </ul>
+
+  <h3>Le tre componenti</h3>
+  <div class="cards">
+    <div class="card"><h4>CICR</h4><p>Comitato Internazionale. Solo cittadini svizzeri. <b>Riconosce</b> le Società Nazionali. <b>In guerra</b> è intermediario neutrale: controlla il rispetto delle Convenzioni, ricerca i dispersi, trasmette i Messaggi di Croce Rossa.</p></div>
+    <div class="card"><h4>FICR</h4><p>Federazione delle Società Nazionali. Le coordina e le aiuta a crescere. Guida i soccorsi internazionali nelle <b>catastrofi in tempo di pace</b>.</p></div>
+    <div class="card"><h4>Società Nazionali</h4><p><b>Una sola per Paese</b> (per l'Italia, la CRI). Ausiliarie dei poteri pubblici.</p></div>
+  </div>
+  <div class="note"><div class="lbl">Dai tuoi appunti · correzione</div>
+    <p>Negli appunti CICR e FICR risultano invertiti. È il <b>CICR</b> a occuparsi dei <b>conflitti armati</b>. La <b>FICR</b> si occupa delle <b>emergenze civili e delle catastrofi in tempo di pace</b>. È un classico tranello da test.</p>
+  </div>
+  <p>Nella CRI operano anche due <b>Corpi ausiliari delle Forze Armate</b>: il <b>Corpo Militare Volontario</b> e le <b>Infermiere Volontarie</b> (le "Crocerossine").</p>
+
+  <h3>I 7 Principi Fondamentali</h3>
+  <p>Vanno saputi <b>nell'ordine ufficiale</b>. Per ricordarli: <b>U · I · N · I · V · U · U</b>.</p>
+  <ol>
+    <li><b>Umanità</b>: prevenire e alleviare in ogni circostanza le sofferenze degli uomini; proteggere vita e salute.</li>
+    <li><b>Imparzialità</b>: nessuna distinzione di nazionalità, razza, religione, condizione sociale o politica. Si soccorre secondo <span class="k">gravità e urgenza</span>.</li>
+    <li><b>Neutralità</b>: non prendere parte alle ostilità né alle controversie politiche, razziali, religiose o ideologiche.</li>
+    <li><b>Indipendenza</b>: le Società Nazionali aiutano lo Stato come ausiliarie, ma restano autonome per agire secondo i Principi.</li>
+    <li><b>Volontariato</b> (o Volontarietà): soccorso volontario e senza scopo di lucro.</li>
+    <li><b>Unità</b>: in un Paese <span class="k">una sola Società</span>, aperta a tutti, attiva su tutto il territorio.</li>
+    <li><b>Universalità</b>: tutte le Società Nazionali hanno uguali diritti e il dovere di aiutarsi a vicenda.</li>
+  </ol>
+
+  <h3>Le aree di attività CRI</h3>
+  <div class="tw"><table>
+    <tr><th>Area</th><th>Di cosa si occupa</th></tr>
+    <tr><td><b>Salute</b></td><td>Soccorso e trasporto sanitario, prevenzione, educazione sanitaria</td></tr>
+    <tr><td><b>Inclusione sociale</b></td><td>Persone fragili: senza dimora, anziani, persone con disabilità, migranti</td></tr>
+    <tr><td><b>Emergenza</b></td><td>Protezione civile, preparazione e risposta alle calamità</td></tr>
+    <tr><td><b>Principi e Valori</b></td><td>7 Principi, Diritto Internazionale Umanitario, tutela dell'emblema</td></tr>
+    <tr><td><b>Giovani</b></td><td>Cittadinanza attiva, educazione tra pari, innovazione</td></tr>
+    <tr><td><b>Sviluppo organizzativo</b></td><td>Formazione, gestione, comunicazione</td></tr>
+    <tr><td><b>Cooperazione internazionale</b></td><td>Progetti all'estero con il Movimento, supporto nelle crisi</td></tr>
+  </table></div>
+  <p>Sono i 7 Obiettivi della <b>Strategia CRI 2018–2030</b>.</p>
+</section>
+
+<section class="mod" id="m2" data-t="Emblema e DIU" hidden>
+  <div class="modnum">MODULO 02</div>
+  <h2>Emblema e Diritto Internazionale Umanitario</h2>
+  <div class="brief"><div class="lbl">In breve</div><ul>
+    <li>Tre emblemi: croce (1864), mezzaluna (1929), cristallo (2005).</li>
+    <li>Uso <b>protettivo</b> (grande) e uso <b>distintivo</b> (piccolo).</li>
+    <li>Le <span class="k">4 Convenzioni di Ginevra del 1949</span>.</li>
+  </ul></div>
+
+  <h3>Gli emblemi riconosciuti</h3>
+  <ul>
+    <li><b>Croce rossa</b> su fondo bianco: Convenzione di Ginevra del <span class="k">1864</span>.</li>
+    <li><b>Mezzaluna rossa</b>: ammessa nel <b>1929</b> dopo le obiezioni turche (con il leone e sole rossi, oggi non più usato).</li>
+    <li><b>Cristallo rosso</b>: <span class="k">III Protocollo aggiuntivo, 8 dicembre 2005</span>, in vigore dal 14 gennaio 2007. Non ha significati nazionali, religiosi o politici.</li>
+  </ul>
+
+  <h3>I due usi</h3>
+  <div class="cards">
+    <div class="card"><h4>Uso protettivo</h4><p><b>Grandi dimensioni</b>, forma pura. In guerra protegge feriti, personale, strutture e mezzi sanitari.</p></div>
+    <div class="card"><h4>Uso distintivo</h4><p><b>Piccole dimensioni</b>. Indica che una persona o un bene appartiene al Movimento.</p></div>
+  </div>
+
+  <h3>Gli abusi</h3>
+  <ul>
+    <li><b>Imitazione</b>: un simbolo che si può confondere per forma o colore.</li>
+    <li><b>Uso improprio</b>: lo usa chi non ne ha diritto (es. una farmacia, un'azienda).</li>
+    <li><b>Perfidia</b>: usarlo in guerra per proteggere combattenti o armi. È <span class="k">l'abuso più grave</span>, un crimine di guerra.</li>
+  </ul>
+
+  <h3>Il DIU e le sue tappe</h3>
+  <p>Il DIU protegge chi non combatte o non combatte più, e pone <b>limiti ai mezzi e ai metodi</b> di guerra.</p>
+  <div class="tw"><table>
+    <tr><th>Anno</th><th>Cosa</th></tr>
+    <tr><td class="n">1864</td><td>I Convenzione di Ginevra: feriti e malati degli eserciti</td></tr>
+    <tr><td class="n">1925</td><td>Divieto di gas tossici e armi batteriologiche</td></tr>
+    <tr><td class="n">1949</td><td><span class="k">4 Convenzioni</span>: I feriti in terra · II feriti e naufraghi in mare · III prigionieri · IV civili</td></tr>
+    <tr><td class="n">1954</td><td>Protezione dei beni culturali</td></tr>
+    <tr><td class="n">1977</td><td>2 Protocolli: I conflitti internazionali · II conflitti non internazionali</td></tr>
+    <tr><td class="n">1998</td><td>Statuto della Corte Penale Internazionale (attiva dal 2002)</td></tr>
+  </table></div>
+</section>
+
+<section class="mod" id="m3" data-t="Intro PS" hidden>
+  <div class="modnum">MODULO 03</div>
+  <h2>Introduzione al Primo Soccorso</h2>
+  <div class="brief"><div class="lbl">In breve</div><ul>
+    <li>Prima di tutto la <span class="k">sicurezza (autoprotezione)</span>.</li>
+    <li>Coscienza → vie aeree → <span class="k">G.A.S. per 10 secondi</span> → PLS o RCP.</li>
+    <li>Art. 593 c.p. (omissione di soccorso) e art. 54 c.p. (stato di necessità).</li>
+  </ul></div>
+
+  <h3>Definizioni</h3>
+  <div class="cards">
+    <div class="card"><h4>Primo soccorso</h4><p>L'aiuto che <b>ogni cittadino</b> può dare per evitare che la persona peggiori.</p></div>
+    <div class="card"><h4>Pronto soccorso</h4><p>Le cure del <b>personale qualificato</b>, con strumenti e farmaci.</p></div>
+    <div class="card"><h4>Urgenza</h4><p>Pericolo di vita <b>immediato</b>.</p></div>
+    <div class="card"><h4>Gravità</h4><p>Pericolo di vita <b>non immediato</b>.</p></div>
+  </div>
+
+  <h3>Cosa fa il soccorritore</h3>
+  <ol class="steps">
+    <li><span class="k">Valuta la sicurezza</span> della scena (autoprotezione)</li>
+    <li>Allontana i curiosi</li>
+    <li>Capisce cosa è successo (natura e dinamica)</li>
+    <li>Esamina l'infortunato: funzioni vitali, poi ispezione accurata</li>
+    <li>Chiama il <b>112/118</b></li>
+    <li>Esegue i gesti di primo soccorso e resta vicino alla persona</li>
+  </ol>
+  <p><span class="no">NO</span> muovere l'infortunato · <span class="no">NO</span> trasportarlo con mezzi inadatti · <span class="no">NO</span> dargli da bere, mai alcolici. <b>Meglio non fare che fare male.</b></p>
+
+  <h3>La chiamata al 112/118</h3>
+  <p>Chi sei · <b>dove sei</b> · cosa è successo · quanti feriti · come stanno · eventuali pericoli · cosa hai già fatto. Metti il vivavoce e chiudi solo quando lo dice l'operatore.</p>
+
+  <h3>Più feriti: scala delle urgenze</h3>
+  <div class="tw"><table>
+    <tr><th>Livello</th><th>Esempi</th></tr>
+    <tr><td class="no">Estrema urgenza</td><td>Respiro o circolo gravemente alterati, politraumi</td></tr>
+    <tr><td><b>Urgenza primaria</b></td><td>Emorragie contenibili, gravi traumi a torace o addome, ustioni estese</td></tr>
+    <tr><td><b>Urgenza secondaria</b></td><td>Fratture della colonna, fratture esposte, ferite gravi</td></tr>
+    <tr><td>Senza urgenza</td><td>Fratture chiuse degli arti, ferite lievi, piccole ustioni</td></tr>
+  </table></div>
+  <p>Chi urla di più non è sempre il più grave.</p>
+
+  <h3>Valutare le funzioni vitali</h3>
+  <p>Le funzioni vitali sono <b>coscienza</b>, <b>respiro</b> e <b>circolo</b>.</p>
+  <ol class="steps">
+    <li>Chiama e scuoti: “Signore, mi sente?”. Se è <b>cosciente</b> passa al controllo secondario.</li>
+    <li>Se è <b>incosciente</b>: chiama il 112/118.</li>
+    <li>Apri le vie aeree: <b>iperestensione del capo</b> e sollevamento della mandibola (la lingua non chiude più la gola).</li>
+    <li><span class="k">G.A.S. per non più di 10 secondi</span>: Guardo il torace, Ascolto il respiro, Sento l'aria sulla guancia.</li>
+    <li>Respira normalmente → <b>PLS</b> (non se c'è un trauma grave). Non respira → <b>RCP</b>.</li>
+  </ol>
+
+  <h3>Aspetti legali</h3>
+  <ul>
+    <li><b>Art. 593 c.p., omissione di soccorso</b>: è punito chi non presta assistenza <b>o non avvisa l'Autorità</b>. La pena aumenta se ne deriva una lesione e raddoppia se ne deriva la morte.</li>
+    <li><b>Art. 54 c.p., stato di necessità</b>: non è punibile chi agisce per salvare sé o altri da un pericolo grave e attuale, se l'azione è proporzionata.</li>
+  </ul>
+</section>
+
+<section class="mod" id="m4" data-t="Respiro" hidden>
+  <div class="modnum">MODULO 04</div>
+  <h2>Apparato respiratorio</h2>
+  <div class="brief"><div class="lbl">In breve</div><ul>
+    <li>Lo scambio dei gas avviene negli <span class="k">alveoli</span>.</li>
+    <li>Ossigeno: <span class="k">21%</span> nell'aria inspirata, <span class="k">16%</span> in quella espirata.</li>
+    <li>Nell'inspirazione il diaframma si contrae e si abbassa.</li>
+  </ul></div>
+  <h3>Il percorso dell'aria</h3>
+  <p>Naso e bocca → faringe → laringe → <b>trachea</b> → bronchi → bronchioli → <b>alveoli</b>. I polmoni sono avvolti dalla <b>pleura</b>.</p>
+  <h3>Come si respira</h3>
+  <div class="cards">
+    <div class="card"><h4>Inspirazione</h4><p>Fase attiva: il <b>diaframma si contrae e si abbassa</b>, i polmoni si espandono.</p></div>
+    <div class="card"><h4>Espirazione</h4><p>Il diaframma si rilassa e risale, i polmoni si svuotano.</p></div>
+  </div>
+  <p>Il respiro è comandato dai centri nel <b>tronco encefalico</b> (midollo allungato e ponte). Nelle cellule l'ossigeno viene usato dai <b>mitocondri</b> per produrre energia.</p>
+  <h3>Composizione dell'aria</h3>
+  <div class="tw"><table>
+    <tr><th></th><th>Ossigeno</th><th>Anidride carbonica</th><th>Azoto</th></tr>
+    <tr><td>Inspirata</td><td class="n"><span class="k">21%</span></td><td class="n">0,04%</td><td class="n">79%</td></tr>
+    <tr><td>Espirata</td><td class="n"><span class="k">16%</span></td><td class="n">4%</td><td class="n">79%</td></tr>
+  </table></div>
+  <p>Ogni atto normale muove circa <b>500 ml</b> d'aria. Nell'aria espirata resta il 16% di ossigeno: per questo le insufflazioni funzionano.</p>
+</section>
+
+<section class="mod" id="m5" data-t="RCP e DAE" hidden>
+  <div class="modnum">MODULO 05</div>
+  <h2>Rianimazione cardiopolmonare e DAE</h2>
+  <div class="brief"><div class="lbl">In breve</div><ul>
+    <li>Adulto: <span class="k">30 compressioni e 2 insufflazioni</span>, profondità <span class="k">5–6 cm</span>, <span class="k">100–120 al minuto</span>.</li>
+    <li>Bambino e lattante: prima <span class="k">5 insufflazioni</span>.</li>
+    <li>Capo: adulto iperesteso, bambino poco esteso, lattante in posizione neutra.</li>
+  </ul></div>
+  <p>La morte cardiaca improvvisa è naturale, rapida e inattesa (in Italia circa 60.000 adulti l'anno). Il cervello resiste solo pochi minuti senza ossigeno. Il <b>BLS</b> serve a chi è <b>incosciente e non respira, o non respira normalmente</b>.</p>
+
+  <h3>La catena della sopravvivenza</h3>
+  <div class="cards">
+    <div class="card"><h4>Adulto · 4 anelli</h4><p>Chiamata al 112 → RCP precoce → Defibrillazione precoce → Soccorso avanzato (ALS)</p></div>
+    <div class="card"><h4>Bambino · 5 anelli</h4><p><b>Prevenzione</b> → Chiamata → RCP → Defibrillazione → Soccorso avanzato (PALS)</p></div>
+  </div>
+  <p>Sequenza <b>A B C D</b>: Airway (vie aeree), Breathing (respiro), Circulation (circolo), Defibrillation.</p>
+
+  <h3>Adulto, passo per passo</h3>
+  <ol class="steps">
+    <li>Controlla la sicurezza</li>
+    <li>Chiama e <b>scuoti per le spalle</b></li>
+    <li>Iperestendi il capo</li>
+    <li>G.A.S. e segni di circolo, massimo 10 secondi</li>
+    <li>Se non respira: fai chiamare il <b>112/118 e chiedi il DAE</b></li>
+    <li>Inizia <span class="k">30 compressioni + 2 insufflazioni</span></li>
+    <li>Continua fino all'arrivo dei soccorsi avanzati</li>
+  </ol>
+
+  <h3>Bambino e lattante, passo per passo</h3>
+  <ol class="steps">
+    <li>Controlla la sicurezza e stimola la vittima</li>
+    <li>Se non risponde, chiedi aiuto a chi è vicino</li>
+    <li>Apri le vie aeree e fai il G.A.S.</li>
+    <li>Se non respira: <span class="k">5 insufflazioni di soccorso</span></li>
+    <li>Se non ci sono segni vitali: chiama il 112/118</li>
+    <li>30 compressioni alternate a 2 insufflazioni</li>
+  </ol>
+
+  <h3>Le differenze da ricordare</h3>
+  <div class="tw"><table>
+    <tr><th></th><th>Adulto</th><th>Bambino</th><th>Lattante</th></tr>
+    <tr><td>Età</td><td>Oltre i 18 anni</td><td>1–18 anni</td><td>Sotto 1 anno</td></tr>
+    <tr><td>Capo</td><td>Iperestensione</td><td>Modica estensione</td><td>Posizione neutra</td></tr>
+    <tr><td>Profondità</td><td class="n"><span class="k">5–6 cm</span></td><td>1/3 del torace</td><td>1/3 del torace</td></tr>
+  </table></div>
+  <p>Per tutti: <span class="k">100–120 compressioni al minuto</span>, braccia tese, spalle sopra lo sterno, rilascio completo senza staccare le mani. Se la persona respira, mettila in <b>PLS</b> e ricontrolla <b>ogni minuto</b>.</p>
+  <div class="note"><div class="lbl">Da sapere</div><ul>
+    <li>Se sei solo con il telefono: vivavoce, chiama e inizia subito la RCP. Senza telefono, con un bambino, fai 1 minuto di RCP prima di allontanarti.</li>
+    <li><b>Legge 116/2021</b>: il DAE può essere usato anche da chi non è formato, se si sospetta un arresto cardiaco. Chi lo usa non è punibile (art. 54 c.p.).</li>
+  </ul></div>
+</section>
+
+<section class="mod" id="m6" data-t="Circolo" hidden>
+  <div class="modnum">MODULO 06</div>
+  <h2>Apparato cardiocircolatorio</h2>
+  <div class="brief"><div class="lbl">In breve</div><ul>
+    <li>Arterie: dal cuore. Vene: verso il cuore.</li>
+    <li>Pressione normale <span class="k">120/80 mmHg</span>.</li>
+    <li>Sangue: <span class="k">5–7 litri</span>. Polso: frequenza, ritmo, volume.</li>
+  </ul></div>
+  <h3>Il cuore</h3>
+  <p>Due atri e due ventricoli. Il muscolo è il <b>miocardio</b>, avvolto dal pericardio. Il cuore si contrae (<b>sistole</b>) e si rilassa (<b>diastole</b>). Il battito parte dal <b>nodo seno‑atriale</b>, il pacemaker naturale.</p>
+  <h3>Le due circolazioni</h3>
+  <div class="cards">
+    <div class="card"><h4>Piccola (polmonare)</h4><p>Ventricolo destro → polmoni → atrio sinistro. Il sangue si carica di ossigeno.</p></div>
+    <div class="card"><h4>Grande (sistemica)</h4><p>Ventricolo sinistro → <b>aorta</b> → tutto il corpo → vene cave → atrio destro.</p></div>
+  </div>
+  <h3>I vasi</h3>
+  <ul>
+    <li><b>Arterie</b>: portano il sangue <b>dal</b> cuore. Pareti spesse ed elastiche, pulsano.</li>
+    <li><b>Vene</b>: portano il sangue <b>al</b> cuore. Hanno le valvole a nido di rondine.</li>
+    <li><b>Capillari</b>: vasi sottilissimi dove avvengono gli scambi.</li>
+  </ul>
+  <h3>Polso, pressione e sangue</h3>
+  <ul>
+    <li><b>Polso</b>: si valuta per <b>frequenza</b> (lento o rapido), <b>ritmo</b> (regolare o irregolare) e <b>volume</b> (debole o pieno). Si sente al polso (radiale) o al collo (carotideo).</li>
+    <li><b>Pressione arteriosa</b>: normale <span class="k">120/80 mmHg</span> (massima e minima).</li>
+    <li><b>Sangue</b>: <span class="k">5–7 litri</span>. Plasma 55% (quasi tutto acqua) e cellule 45%: globuli rossi, globuli bianchi, piastrine.</li>
+  </ul>
+</section>
+
+<section class="mod" id="m7" data-t="Ossa" hidden>
+  <div class="modnum">MODULO 07</div>
+  <h2>Traumi a ossa, articolazioni e muscoli</h2>
+  <div class="brief"><div class="lbl">In breve</div><ul>
+    <li>Distorsione: <span class="k">temporanea</span>. Lussazione: <span class="k">permanente</span>.</li>
+    <li><span class="no">Mai</span> rimettere a posto: immobilizza come si trova.</li>
+    <li>Nel dubbio, trattala <b>come una frattura</b>.</li>
+  </ul></div>
+  <h3>Muscoli</h3>
+  <ul>
+    <li><b>Contusione, stiramento, strappo</b>: ghiaccio per 15–20 minuti ogni 2–3 ore, arto sollevato e a riposo. <span class="no">NO</span> pomate, calore o massaggi.</li>
+    <li><b>Crampo</b> (perdita di sali e liquidi): far bere, allungare il muscolo, massaggiare, ambiente fresco.</li>
+  </ul>
+  <h3>Articolazioni</h3>
+  <div class="cards">
+    <div class="card"><h4>Distorsione</h4><p>Perdita <b>temporanea</b> dei rapporti articolari. Dolore, gonfiore, movimento limitato.</p><p style="margin-top:8px">Immobilizza, ghiaccio, visita in Pronto Soccorso.</p></div>
+    <div class="card"><h4>Lussazione</h4><p>Perdita <b>permanente</b>. Dolore fortissimo, deformità, arto bloccato.</p><p style="margin-top:8px"><span class="no">NO</span> rimetterla a posto. Immobilizza, ghiaccio, ospedale <b>entro 6 ore</b> (subito se ci sono formicolii).</p></div>
+  </div>
+  <h3>Fratture</h3>
+  <p>Una frattura è l'interruzione di un osso. Può essere completa o incompleta, composta o scomposta, <b>chiusa o esposta</b> (l'osso buca la pelle).</p>
+  <ol class="steps">
+    <li>Autoprotezione, dinamica, 112/118, funzioni vitali</li>
+    <li><span class="k">Sospetta sempre una lesione della colonna</span></li>
+    <li><span class="no">NO</span> far muovere la parte, <span class="no">NO</span> raddrizzarla</li>
+    <li>Immobilizza bloccando le <b>articolazioni sopra e sotto</b> la frattura</li>
+  </ol>
+  <ul>
+    <li><b>Frattura esposta</b>: non toccare, copri la ferita, controlla l'emorragia. Rischi: infezione, emorragia, embolia.</li>
+    <li><b>Femore</b>: può causare una grave emorragia interna e <b>shock</b>.</li>
+    <li><b>Coste</b>: dolore quando respira → posizione <span class="k">semiseduta sul lato ferito</span>. Se 3 o più coste sono rotte in due punti (lembo mobile, il torace si muove al contrario) → stabilizza il lembo.</li>
+  </ul>
+</section>
+
+<section class="mod" id="m8" data-t="Nervoso" hidden>
+  <div class="modnum">MODULO 08</div>
+  <h2>Sistema nervoso</h2>
+  <div class="brief"><div class="lbl">In breve</div><ul>
+    <li>Centrale: <span class="k">encefalo + midollo spinale</span>. Periferico: i nervi.</li>
+    <li>Radice posteriore sensitiva, anteriore motoria.</li>
+  </ul></div>
+  <ul>
+    <li>Il sistema nervoso <b>riceve, analizza, risponde e coordina</b>.</li>
+    <li><b>Centrale</b>: encefalo (cervello, cervelletto, midollo allungato) e midollo spinale. È protetto dalle ossa e dalle <b>meningi</b>: dura madre, aracnoide, pia madre.</li>
+    <li><b>Periferico</b>: nervi cranici e 31 paia di nervi spinali.</li>
+    <li><b>Volontario</b> (vita di relazione) e <b>autonomo</b> (organi interni, involontario).</li>
+    <li>Nel nervo spinale la radice <b>posteriore</b> è <b>sensitiva</b>, quella <b>anteriore</b> è <b>motoria</b>.</li>
+    <li><b>Arco riflesso</b>: la risposta parte dal midollo senza passare dal cervello (togli la mano dalla fiamma).</li>
+  </ul>
+</section>
+
+<section class="mod" id="m9" data-t="Cranio e colonna" hidden>
+  <div class="modnum">MODULO 09</div>
+  <h2>Traumi cranici e vertebrali</h2>
+  <div class="brief"><div class="lbl">In breve</div><ul>
+    <li>Ogni trauma cranico va in ospedale o in <span class="k">osservazione per 48 ore</span>.</li>
+    <li><span class="no">NO</span> togliere il casco, <span class="no">NO</span> posizione antishock.</li>
+    <li>Colonna: <span class="k">immobilità assoluta</span>.</li>
+  </ul></div>
+  <h3>Trauma cranico</h3>
+  <p>Le lesioni interne possibili sono <b>commozione</b>, <b>contusione</b> ed <b>ematoma</b> cerebrale. Segni da riconoscere:</p>
+  <ul>
+    <li>Coscienza alterata, confusione, mal di testa, nausea</li>
+    <li><span class="k">Anisocoria</span> (pupille di grandezza diversa)</li>
+    <li><b>Vomito a getto</b>, convulsioni, perdita di memoria</li>
+    <li>Sangue o liquido dal naso o dalle orecchie</li>
+  </ul>
+  <p>Attenzione: nessuna ferita fuori non vuol dire nessun danno dentro, e chi è cosciente ora può non esserlo dopo.</p>
+  <div class="cards">
+    <div class="card"><h4>Se è cosciente</h4><p>Controlla che sia orientato. Posizione <b>semiseduta, capo fermo</b>.</p></div>
+    <div class="card"><h4>Se è incosciente</h4><p>112/118. Disteso, immobile, capo fermo. <b>PLS solo se vomita.</b> Controlla le funzioni vitali.</p></div>
+  </div>
+  <p><span class="no">NO</span> posizione antishock · <span class="no">NO</span> fermare il liquido che esce da naso o orecchie · <span class="no">NO</span> togliere il casco.</p>
+  <h3>Trauma della colonna</h3>
+  <p>Può dare dolore, formicolii, perdita di sensibilità o di movimento, perdita di urine e feci, <b>ma anche nessun sintomo</b>.</p>
+  <p>Cosa fare: valuta la dinamica, controlla le funzioni vitali, chiama il 112/118 e mantieni l'<span class="k">immobilità assoluta</span>. Mai sollevarlo per braccia e gambe. <b>Meglio non fare che fare male.</b></p>
+</section>
+
+<section class="mod" id="m10" data-t="Emorragie" hidden>
+  <div class="modnum">MODULO 10</div>
+  <h2>Emorragie</h2>
+  <div class="brief"><div class="lbl">In breve</div><ul>
+    <li>Sequenza: <span class="k">compressione diretta → bendaggio compressivo → laccio</span>.</li>
+    <li>Laccio: <b>sopra gomito o ginocchio</b>, segna <b>l'orario</b>.</li>
+    <li>Amputazione: <span class="no">NO</span> laccio.</li>
+  </ul></div>
+  <p>La gravità dipende da <b>quanto</b> sangue si perde e in <b>quanto tempo</b>. Un adulto ne ha circa 5 litri. L'emorragia può essere arteriosa, venosa, capillare o mista; esterna, interna o esteriorizzata (esce da un orifizio naturale).</p>
+
+  <h3>Emorragia esterna</h3>
+  <ol class="steps">
+    <li>Metti i <b>guanti</b> e fai chiamare il 112/118</li>
+    <li>Fai sedere o sdraiare il ferito, solleva l'arto se possibile</li>
+    <li><span class="k">Compressione diretta</span> sulla ferita</li>
+    <li>Se continua: <b>bendaggio compressivo</b></li>
+    <li>Solo se ancora non basta: <b>laccio emostatico arterioso</b></li>
+  </ol>
+  <div class="note"><div class="lbl">Laccio emostatico</div><ul>
+    <li>Solo in <b>estrema necessità</b>: ferita non comprimibile, emorragia che non si ferma, molti feriti o luogo isolato.</li>
+    <li>Tra ferita e cuore: <span class="k">sopra il gomito o sopra il ginocchio</span>.</li>
+    <li>Striscia larga di stoffa, cravatta o foulard. <span class="no">NO</span> spago, fil di ferro, calze di nylon.</li>
+    <li><span class="k">Segna laccio e orario</span> di applicazione.</li>
+  </ul></div>
+  <p><b>Amputazione</b>: <span class="no">NO</span> laccio, bendaggio compressivo. La parte amputata: sciacqua solo se molto sporca (non disinfettare), avvolgi in un telino umido, metti in un sacchetto e poi in un contenitore con acqua e ghiaccio.</p>
+
+  <h3>Sangue da un orifizio</h3>
+  <div class="tw"><table>
+    <tr><th>Nome</th><th>Da dove</th><th>Cosa fare</th></tr>
+    <tr><td><b>Epistassi</b></td><td>Naso</td><td>Testa <b>in avanti</b>, stringi le narici. <span class="no">NO</span> testa indietro.</td></tr>
+    <tr><td><b>Otorragia</b></td><td>Orecchio</td><td>Non tamponare: possibile trauma cranico</td></tr>
+    <tr><td><b>Emottisi</b></td><td>Polmoni, con la tosse</td><td>Semiseduto</td></tr>
+    <tr><td><b>Ematemesi</b></td><td>Stomaco, con il vomito</td><td>PLS</td></tr>
+    <tr><td>Melena, rettorragia, ematuria, metrorragia</td><td>Feci, retto, urine, utero</td><td>Supino con gambe sollevate</td></tr>
+  </table></div>
+
+  <h3>Emorragia interna</h3>
+  <p><b>Semplice</b> (ecchimosi, ematoma): ghiaccio; impacchi caldo‑umidi dopo 48 ore.</p>
+  <p><b>Grave</b>: la persona è pallida, sudata, fredda, agitata o assopita, respira veloce, ha <span class="k">polso debole e frequente</span>, ha sete e freddo.</p>
+  <ol class="steps">
+    <li>Chiama il 112/118</li>
+    <li><b>Posizione antishock</b>: a terra con le gambe sollevate</li>
+    <li>Coprila e aiutala a respirare</li>
+    <li><span class="no">NO</span> liquidi (né acqua, né alcol, né caffè)</li>
+    <li>Rassicurala e controlla le funzioni vitali</li>
+  </ol>
+</section>
+
+<div class="pager">
+  <button class="btn" id="prev">← Modulo precedente</button>
+  <button class="btn primary" id="next">Modulo successivo →</button>
+</div>
+<p class="src">Fonti: slide del corso CRI (“Giorno 1”, “Emblema”, “Lezioni di Primo Soccorso” V ed. maggio 2024, Commissione Nazionale Didattica Salute) e i tuoi appunti manoscritti.</p>
+</div>
+
+<div id="p-quiz" role="tabpanel" hidden>
+  <div class="qbar">
+    <label for="qfilter" style="color:var(--muted);font-size:15px">Modulo</label>
+    <select id="qfilter"></select>
+    <button class="btn primary" id="qnew">Nuovo quiz</button>
+    <span class="score" id="qscore">0 / 0</span>
+  </div>
+  <div id="qlist"></div>
+</div>
+
+</div>
+
+<script id="app">
+const SNAP="<!doctype html>\n"+document.documentElement.outerHTML;
+const M={1:"Movimento",2:"Emblema e DIU",3:"Intro PS",4:"Respiro",5:"RCP e DAE",6:"Circolo",7:"Ossa",8:"Nervoso",9:"Cranio e colonna",10:"Emorragie"};
+const Q=[
+[1,"In che data si svolse la battaglia di Solferino?",["24 giugno 1859","22 agosto 1864","12 agosto 1949","8 maggio 1828"],0,"Dunant assistette alla battaglia il 24 giugno 1859."],
+[1,"Quale componente del Movimento riconosce le nuove Società Nazionali?",["FICR","CICR","ONU","La Società Nazionale del Paese"],1,"È compito del CICR, che poi notifica il riconoscimento alle altre Società."],
+[1,"Chi interviene come intermediario neutrale nei conflitti armati?",["FICR","CICR","Società Nazionale","Corpo Militare CRI"],1,"Il CICR si occupa dei conflitti; la FICR delle catastrofi in tempo di pace."],
+[1,"Chi coordina i soccorsi internazionali nelle catastrofi naturali in tempo di pace?",["CICR","FICR","Corpo Militare CRI","Protezione Civile"],1,"È la Federazione Internazionale delle Società di CR e MR."],
+[1,"Quale principio afferma che in un Paese può esistere una sola Società di Croce Rossa?",["Universalità","Unità","Indipendenza","Imparzialità"],1,"Unità: una sola Società, aperta a tutti, su tutto il territorio."],
+[1,"Soccorrere secondo la gravità e l'urgenza delle sofferenze esprime il principio di:",["Umanità","Neutralità","Imparzialità","Volontariato"],2,"Imparzialità: nessuna distinzione, priorità a gravità e urgenza."],
+[1,"Quale è l'ordine corretto dei 7 Principi?",["Umanità, Imparzialità, Neutralità, Indipendenza, Volontariato, Unità, Universalità","Umanità, Neutralità, Imparzialità, Unità, Indipendenza, Universalità, Volontariato","Imparzialità, Umanità, Unità, Neutralità, Volontariato, Indipendenza, Universalità","Neutralità, Umanità, Indipendenza, Imparzialità, Unità, Volontariato, Universalità"],0,"Mnemonico: U-I-N-I-V-U-U."],
+[1,"Tutte le Società Nazionali hanno uguali diritti e il dovere di aiutarsi: quale principio?",["Unità","Universalità","Umanità","Indipendenza"],1,"Universalità."],
+[1,"Quali sono i due Corpi ausiliari delle Forze Armate della CRI?",["Corpo Militare Volontario e Infermiere Volontarie","Pionieri e Giovani CRI","Operatori di emergenza e Soci volontari","Carabinieri e Protezione Civile"],0,"Entrambi hanno ordinamento e formazione specifici."],
+[1,"L'assistenza a senza dimora e anziani soli rientra nell'area:",["Salute","Inclusione sociale","Emergenza","Sviluppo organizzativo"],1,"Inclusione sociale: ridurre vulnerabilità ed esclusione."],
+[2,"Quale documento introduce il Cristallo Rosso?",["Convenzione di Ginevra del 1864","Revisione del 1929","III Protocollo aggiuntivo del 2005","Protocolli aggiuntivi del 1977"],2,"III Protocollo, 8 dicembre 2005; in vigore dal 14 gennaio 2007."],
+[2,"L'uso protettivo dell'emblema prevede:",["Piccole dimensioni, su oggetti del Movimento","Grandi dimensioni, forma pura, durante i conflitti","Uso libero da parte di farmacie e ospedali privati","Solo sui documenti della FICR"],1,"Deve essere ben visibile per proteggere feriti, personale e mezzi sanitari."],
+[2,"Usare l'emblema in guerra per proteggere combattenti armati si chiama:",["Imitazione","Uso improprio","Perfidia","Uso distintivo"],2,"È l'abuso più grave, un crimine di guerra."],
+[2,"Una farmacia che espone una croce rossa commette:",["Perfidia","Uso improprio (abuso)","Uso protettivo","Nessun abuso"],1,"Chi non ne ha diritto non può usarla: uso improprio."],
+[2,"Quale delle 4 Convenzioni di Ginevra del 1949 protegge la popolazione civile?",["I","II","III","IV"],3,"I feriti in terra, II in mare, III prigionieri, IV civili."],
+[2,"I due Protocolli aggiuntivi del 1977 riguardano:",["Emblema e beni culturali","Conflitti internazionali e non internazionali","Gas tossici e armi batteriologiche","Prigionieri e naufraghi"],1,"I Protocollo internazionali, II non internazionali."],
+[3,"Qual è la prima cosa da fare arrivando sul luogo di un incidente?",["Chiamare il 118","Valutare la coscienza","Valutare la sicurezza della scena (autoprotezione)","Spostare il ferito"],2,"Un soccorritore ferito non aiuta nessuno."],
+[3,"Una situazione con pericolo di vita immediato si definisce:",["Gravità","Urgenza","Primo soccorso","Pronto soccorso"],1,"Urgenza = immediato; gravità = non immediato."],
+[3,"Per quanto tempo si esegue il G.A.S.?",["5 secondi","Non più di 10 secondi","30 secondi","1 minuto"],1,"Guardo, Ascolto, Sento per non più di 10 secondi."],
+[3,"Un infortunato incosciente che respira normalmente, senza trauma grave, va messo:",["Supino con gambe sollevate","In Posizione Laterale di Sicurezza","Seduto","Prono"],1,"PLS, controllando il respiro ogni minuto."],
+[3,"Perché si iperestende il capo nell'incosciente?",["Per valutare le pupille","Per evitare che la lingua ostruisca le vie aeree","Per favorire il vomito","Per immobilizzare il collo"],1,"Garantisce la pervietà delle vie aeree."],
+[3,"L'omissione di soccorso è disciplinata da:",["Art. 54 c.p.","Art. 593 c.p.","Legge 116/2021","Art. 32 Costituzione"],1,"Punisce anche chi non avvisa l'Autorità."],
+[3,"Nella scala delle urgenze, una frattura della colonna vertebrale è:",["Estrema urgenza","Urgenza primaria","Urgenza secondaria","Senza urgenza"],2,"Come fratture esposte e ferite gravi."],
+[4,"Qual è la percentuale di ossigeno nell'aria espirata?",["21%","16%","4%","0,04%"],1,"Ne resta abbastanza per rendere efficaci le insufflazioni."],
+[4,"Dove avviene lo scambio gassoso nei polmoni?",["Trachea","Bronchi","Alveoli","Pleura"],2,"Tra alveoli e capillari polmonari."],
+[4,"Durante l'inspirazione il diaframma:",["Si rilassa e sale","Si contrae e si abbassa","Resta fermo","Si contrae e sale"],1,"Così il torace si allarga e i polmoni si espandono."],
+[4,"Il volume d'aria di un atto respiratorio normale è circa:",["150 ml","500 ml","1,5 litri","5 litri"],1,"Circa 500 ml."],
+[5,"Rapporto compressioni/insufflazioni nell'adulto:",["15:2","30:2","5:1","30:1"],1,"30 compressioni toraciche esterne, 2 insufflazioni."],
+[5,"Profondità delle compressioni nell'adulto:",["2–3 cm","5–6 cm","1/3 del torace","8–10 cm"],1,"Nel bambino e nel lattante: 1/3 del diametro del torace."],
+[5,"Frequenza delle compressioni toraciche:",["60–80/min","80–100/min","100–120/min","140–160/min"],2,"100–120 al minuto, senza perdere il contatto."],
+[5,"Nel BLS pediatrico, se il respiro è assente o anomalo, si eseguono subito:",["30 compressioni","5 insufflazioni di soccorso","La PLS","La defibrillazione"],1,"Nei bambini l'arresto è spesso di origine respiratoria."],
+[5,"Posizione del capo in un lattante per aprire le vie aeree:",["Iperestensione","Modica estensione","Posizione neutra","Flessione"],2,"Adulto iperestensione, bambino modica estensione, lattante neutra."],
+[5,"Qual è il primo anello della catena della sopravvivenza pediatrica?",["Chiamata al NUE","Prevenzione","RCP precoce","Defibrillazione"],1,"Nell'adulto invece il primo anello è la chiamata."],
+[5,"Quale legge regola l'uso del DAE da parte della popolazione?",["Legge 116/2021","Art. 593 c.p.","Legge 81/2008","Legge 120/2001"],0,"Consente l'uso anche a non formati in caso di sospetto arresto."],
+[5,"Un paziente in PLS va ricontrollato:",["Ogni 10 minuti","Ogni minuto","Solo all'arrivo dei soccorsi","Ogni 5 minuti"],1,"Il respiro può cessare in ogni momento."],
+[6,"Quale camera del cuore pompa il sangue nell'aorta?",["Atrio destro","Ventricolo destro","Atrio sinistro","Ventricolo sinistro"],3,"Inizio della grande circolazione."],
+[6,"Il pacemaker naturale del cuore è:",["Nodo atrio-ventricolare","Nodo seno-atriale","Pericardio","Valvola mitrale"],1,"Da lì parte l'impulso elettrico."],
+[6,"Valori normali di pressione arteriosa:",["120/80 mmHg","160/100 mmHg","90/40 mmHg","80/120 mmHg"],0,"Massima 120, minima 80."],
+[6,"Le caratteristiche del polso da valutare sono:",["Colore, calore, umidità","Frequenza, ritmo, volume","Pressione, temperatura, frequenza","Solo la frequenza"],1,"Lento/rapido, regolare/irregolare, debole/pieno."],
+[6,"Le vene si distinguono dalle arterie perché:",["Portano sangue dal cuore ai tessuti","Hanno valvole a nido di rondine","Hanno pareti più spesse","Pulsano"],1,"Portano sangue verso il cuore e le valvole impediscono il reflusso."],
+[7,"La perdita permanente dei rapporti articolari è una:",["Distorsione","Lussazione","Frattura","Contusione"],1,"La distorsione è una perdita temporanea."],
+[7,"Di fronte a una lussazione di spalla:",["Si rimette a posto con cautela","Si immobilizza nella posizione in cui si trova","Si massaggia e si scalda","Si fa muovere per valutare il danno"],1,"Poi ghiaccio e ospedale entro 6 ore (urgente se formicolii)."],
+[7,"Nel dubbio tra distorsione e frattura bisogna:",["Aspettare qualche ora","Comportarsi sempre come se fosse una frattura","Far camminare il ferito","Applicare calore"],1,"Regola esplicita del corso."],
+[7,"Per una contusione o uno stiramento muscolare si applica:",["Calore","Pomata e massaggio","Ghiaccio per 15–20 minuti","Laccio emostatico"],2,"Ogni 2–3 ore, con arto sollevato e a riposo."],
+[7,"Frattura costale semplice: posizione corretta?",["Supino","Semiseduto sul lato della lesione","Semiseduto sul lato sano","PLS"],1,"Limita il movimento del lato fratturato."],
+[7,"Una frattura del femore espone soprattutto al rischio di:",["Crampi","Shock ipovolemico","Ipertensione","Convulsioni"],1,"Può causare un'emorragia interna importante."],
+[8,"Il sistema nervoso centrale comprende:",["Encefalo e midollo spinale","Nervi cranici e spinali","Solo il cervello","Simpatico e parasimpatico"],0,"I nervi formano il sistema nervoso periferico."],
+[8,"La radice posteriore del nervo spinale è:",["Motoria","Sensitiva","Vegetativa","Mista"],1,"Anteriore motoria, posteriore sensitiva."],
+[8,"Le meningi sono, dall'esterno all'interno:",["Pia madre, aracnoide, dura madre","Dura madre, aracnoide, pia madre","Aracnoide, dura madre, pia madre","Dura madre, pia madre, aracnoide"],1,"Dura, aracnoide, pia."],
+[9,"Quale segno fa sospettare una lesione cerebrale dopo un trauma cranico?",["Anisocoria","Crampi alle gambe","Epistassi da raffreddore","Tosse"],0,"Pupille di diametro diverso."],
+[9,"Un traumatizzato cranico asintomatico deve:",["Tornare a casa","Essere ospedalizzato o osservato per 48 ore","Prendere un analgesico","Dormire"],1,"Cosciente subito non significa cosciente sempre."],
+[9,"Motociclista incosciente dopo una caduta: il casco?",["Va tolto subito","Non va rimosso","Va tolto se il paziente respira","Va slacciato e girato"],1,"NO rimuovere il casco."],
+[9,"Nel trauma cranico la posizione antishock è:",["Consigliata","Vietata","Obbligatoria se incosciente","Indifferente"],1,"Aumenta la pressione dentro il cranio."],
+[9,"Trauma cranico, paziente incosciente che respira e non vomita:",["PLS","Disteso, immobile, capo fermo","Posizione antishock","Seduto"],1,"PLS solo se vomita."],
+[10,"Primo intervento su un'emorragia esterna:",["Laccio emostatico","Compressione diretta","Bendaggio compressivo","Disinfezione"],1,"Poi bendaggio compressivo, poi (solo se necessario) laccio."],
+[10,"Dove si applica il laccio emostatico arterioso?",["Sotto il gomito o il ginocchio","Sopra il gomito o sopra il ginocchio","Direttamente sulla ferita","Al collo"],1,"Tra ferita e cuore, con striscia larga di stoffa."],
+[10,"Dopo aver applicato il laccio bisogna:",["Allentarlo ogni 5 minuti","Segnalare laccio e orario di applicazione","Coprirlo con una benda","Rimuoverlo dopo 10 minuti"],1,"Informazione essenziale per i soccorritori."],
+[10,"In caso di amputazione di un dito:",["Laccio alla base","Bendaggio compressivo","Disinfettare il moncone","Cauterizzare"],1,"NO laccio."],
+[10,"La parte amputata va:",["Messa direttamente nel ghiaccio","Avvolta in telino umido, in sacchetto, in contenitore con acqua e ghiaccio","Disinfettata con alcol","Lasciata sul posto"],1,"Mai a contatto diretto con il ghiaccio."],
+[10,"In caso di epistassi, la testa va:",["Reclinata indietro","Piegata in avanti","Tenuta supina","Girata di lato"],1,"All'indietro il sangue va in gola."],
+[10,"Sangue emesso con il vomito si chiama:",["Emottisi","Ematemesi","Melena","Ematuria"],1,"Emottisi: dai polmoni, con la tosse."],
+[10,"Segni di emorragia interna grave (shock):",["Cute rossa e calda, polso lento","Pallore, sudore freddo, polso debole e frequente","Febbre alta","Pressione alta"],1,"Anche sete, agitazione o torpore, respiro rapido."],
+[10,"Emorragia interna grave: cosa NON fare?",["Posizione antishock","Coprire il paziente","Dare da bere","Chiamare il 118"],2,"Nessun liquido: né acqua, né alcol, né caffè."]
+];
+const $=s=>document.querySelector(s);
+const store={get(k){try{return localStorage.getItem(k)}catch(e){return null}},set(k,v){try{localStorage.setItem(k,v)}catch(e){}}};
+
+// moduli
+const mods=[...document.querySelectorAll("section.mod")];
+const chips=$("#chips");
+mods.forEach((m,i)=>{const b=document.createElement("button");b.className="chip";b.innerHTML=`<b>${String(i+1).padStart(2,"0")}</b>${m.dataset.t}`;b.addEventListener("click",()=>show(i,true));chips.appendChild(b)});
+let cur=0;
+function show(i,scroll){cur=Math.max(0,Math.min(mods.length-1,i));mods.forEach((m,k)=>m.hidden=k!==cur);
+  [...chips.children].forEach((c,k)=>c.setAttribute("aria-current",k===cur));
+  chips.children[cur].scrollIntoView({block:"nearest",inline:"center"});
+  $("#prev").disabled=cur===0;$("#next").disabled=cur===mods.length-1;store.set("cri-mod",cur);
+  if(scroll)window.scrollTo({top:$("header").offsetHeight,behavior:"auto"});}
+$("#prev").addEventListener("click",()=>show(cur-1,true));$("#next").addEventListener("click",()=>show(cur+1,true));
+show(+(store.get("cri-mod")||0),false);
+
+// tab
+const tabs=[["t-sch","p-sch"],["t-quiz","p-quiz"]];
+function tab(t){tabs.forEach(([t2,p2])=>{$("#"+t2).setAttribute("aria-selected",t2===t);$("#"+p2).hidden=t2!==t});chips.hidden=t!=="t-sch";store.set("cri-tab",t)}
+tabs.forEach(([t])=>$("#"+t).addEventListener("click",()=>tab(t)));
+if(store.get("cri-tab")==="t-quiz")tab("t-quiz");
+
+// quiz
+const sel=$("#qfilter");
+sel.innerHTML='<option value="0">Tutti (20 casuali)</option>'+Object.entries(M).map(([k,v])=>`<option value="${k}">${k}. ${v}</option>`).join("");
+let ok=0,done=0,total=0;
+function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+function upd(){$("#qscore").textContent=`${ok} giuste su ${done} · ${total} domande`}
+function build(){
+  const f=+sel.value;let pool=shuffle(Q.filter(q=>!f||q[0]===f));if(!f)pool=pool.slice(0,20);
+  ok=0;done=0;total=pool.length;upd();
+  const list=$("#qlist");list.innerHTML="";
+  pool.forEach((q,n)=>{
+    const [m,t,opts,c,why]=q;const order=shuffle(opts.map((o,i)=>i));
+    const d=document.createElement("div");d.className="q";
+    d.innerHTML=`<div class="qmeta">${n+1} · ${M[m]}</div><div class="qtext"></div><div class="opts"></div>`;
+    d.querySelector(".qtext").textContent=t;
+    const box=d.querySelector(".opts");
+    order.forEach(i=>{const b=document.createElement("button");b.className="opt";b.textContent=opts[i];
+      b.addEventListener("click",()=>{box.querySelectorAll(".opt").forEach((x,k)=>{x.disabled=true;if(order[k]===c)x.classList.add("ok")});
+        if(i!==c)b.classList.add("bad");else ok++;done++;upd();
+        const w=document.createElement("div");w.className="why";w.innerHTML=`<b></b> `;w.firstChild.textContent=i===c?"Corretto.":"Risposta giusta: "+opts[c]+".";w.append(why);d.appendChild(w)});
+      box.appendChild(b)});
+    list.appendChild(d)});
+}
+sel.addEventListener("change",build);$("#qnew").addEventListener("click",build);build();
+
+// download
+function cleanCopy(){
+  const doc=new DOMParser().parseFromString(SNAP,"text/html");
+  doc.querySelectorAll("script").forEach(s=>{if(s.id!=="app")s.remove()});
+  const box=doc.getElementById("dlbox");if(box)box.remove();
+  return "<!doctype html>\n"+doc.documentElement.outerHTML;
+}
+const dlbtn=$("#dlbtn"),dlmsg=$("#dlmsg");
+(async()=>{
+  if(!dlbtn)return;
+  const dl=window.claude&&window.claude.use?await window.claude.use("downloads"):null;
+  if(!dl){dlbtn.disabled=true;dlmsg.hidden=false;dlmsg.textContent="Download non disponibile in questa vista. Il file è anche nella tua cartella Corso Base.";if(!window.claude)document.getElementById("dlbox").hidden=true;return}
+  dlbtn.addEventListener("click",async()=>{
+    dlmsg.hidden=false;dlmsg.textContent="Conferma il salvataggio nella finestra che si apre.";
+    try{await dl.save({filename:"Ripasso-Corso-Base-CRI.html",data:cleanCopy()});dlmsg.textContent="File salvato."}
+    catch(e){dlmsg.textContent=e&&e.code==="declined"?"Download annullato.":e&&e.code==="rate_limited"?"C'è già una richiesta aperta: riprova tra poco.":"Download non riuscito in questa vista."}
+  });
+})();
+</script>
+
+</body>
+</html>
